@@ -1,2 +1,2 @@
 export type { User } from './User';
-export type { Item } from './Item';
+export type { Group, Member, MemberLocation, Place } from './Group';

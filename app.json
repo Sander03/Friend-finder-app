@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "UCLL Mobile Starter",
-    "slug": "ucll-mobile-starter",
+    "name": "Waarbenje",
+    "slug": "waarbenje",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "ucllstarter",
-    "userInterfaceStyle": "automatic",
+    "scheme": "waarbenje",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -13,17 +13,33 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0E0F13"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "Waarbenje",
+      "shortName": "Waarbenje",
+      "themeColor": "#0E0F13",
+      "backgroundColor": "#0E0F13"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Waarbenje toont je locatie aan de vrienden in je groep, zodat jullie elkaar terugvinden."
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "backgroundColor": "#0E0F13",
+    "icon": "./assets/icon.png"
   }
 }
