@@ -66,7 +66,11 @@ export default function FriendScreen() {
           <Text size="xxl" weight="bold" display testID="distance">{formatDistance(meters)}</Text>
           <Text weight="medium" align="center">Richting het {compassWord(bearing)}</Text>
           <Text color={colors.textMuted} align="center">{placeLabel(loc, places)}</Text>
-          {loc.accuracy !== null && <Badge label={`GPS ± ${Math.round(loc.accuracy)} m`} />}
+          {loc.accuracy !== null && (
+            <View style={{ alignSelf: 'center' }}>
+              <Badge label={`GPS ± ${Math.round(loc.accuracy)} m`} />
+            </View>
+          )}
         </Stack>
 
         {loc.note !== '' && (

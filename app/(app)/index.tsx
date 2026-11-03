@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   notice: { flexDirection: 'row', gap: 8, marginHorizontal: 20, alignItems: 'flex-start' },
   radar: { flex: 1, minHeight: 280, padding: 8, alignItems: 'center', justifyContent: 'center' },
   sheet: {
-    maxHeight: '45%',
+    maxHeight: '40%',
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 20,

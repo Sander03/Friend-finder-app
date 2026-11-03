@@ -14,6 +14,7 @@ interface RadarProps {
 
 const MIN_RANGE_M = 60;
 const MARKER = 38;
+const PLACE_RADIUS_M = 10;
 
 // Plattegrond rond jezelf, noorden boven. Schaalt mee zodat iedereen in beeld is.
 export function Radar({ me, members, places, onSelectMember }: RadarProps) {
@@ -24,7 +25,7 @@ export function Radar({ me, members, places, onSelectMember }: RadarProps) {
   const offsets = [...located.map((m) => offsetMeters(me, m.location!)), ...places.map((p) => offsetMeters(me, p))];
   const furthest = Math.max(MIN_RANGE_M, ...offsets.map((o) => Math.max(Math.abs(o.east), Math.abs(o.north))));
   // Afgerond naar een mooi getal voor de ringen.
-  const range = [60, 100, 150, 250, 400, 600, 1000, 2000, 3000].find((r) => r >= furthest * 1.1) ?? furthest * 1.1;
+  const range = [50, 75, 100, 125, 150, 200, 300, 400, 600, 1000, 2000, 3000].find((r) => r >= furthest * 1.08) ?? furthest * 1.08;
 
   const half = size / 2;
   const scale = (half - MARKER) / range;
@@ -55,17 +56,21 @@ export function Radar({ me, members, places, onSelectMember }: RadarProps) {
 
           {places.map((place) => {
             const { x, y } = project(place);
+            // Een podium of bar als vlak van ~20 m, met de naam erboven.
+            const area = Math.max(28, PLACE_RADIUS_M * 2 * scale);
             return (
-              <View key={place.id} style={[styles.place, { left: x - 50, top: y - 13 }]} pointerEvents="none">
-                <Text size="sm" weight="medium" color="#8F95A3" align="center" numberOfLines={1}>
-                  {place.name.toUpperCase()}
-                </Text>
+              <View key={place.id} pointerEvents="none">
+                <View style={[styles.placeArea, { width: area, height: area, left: x - area / 2, top: y - area / 2 }]} />
+                <View style={[styles.placeLabel, { left: x - 50, top: y - area / 2 - 18 }]}>
+                  <Text size="sm" weight="medium" color="#8F95A3" align="center" numberOfLines={1}>
+                    {place.name.toUpperCase()}
+                  </Text>
+                </View>
               </View>
             );
           })}
 
           <View style={[styles.meHalo, { left: half - 30, top: half - 30 }]} />
-          <View style={[styles.me, { left: half - 11, top: half - 11 }]} accessibilityLabel="Jij" />
 
           {located.map((member) => {
             const { x, y } = project(member.location!);
@@ -100,6 +105,7 @@ export function Radar({ me, members, places, onSelectMember }: RadarProps) {
               </View>
             );
           })}
+          <View style={[styles.me, { left: half - 11, top: half - 11 }]} accessibilityLabel="Jij" pointerEvents="none" />
         </View>
       )}
     </View>
@@ -107,19 +113,18 @@ export function Radar({ me, members, places, onSelectMember }: RadarProps) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  container: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
   ring: { position: 'absolute', borderRadius: 999, borderWidth: 1, borderColor: colors.border },
   ringLabel: { position: 'absolute' },
   north: { position: 'absolute', width: 20, alignItems: 'center' },
-  place: {
+  placeArea: {
     position: 'absolute',
-    width: 100,
-    paddingVertical: 4,
-    borderRadius: 10,
+    borderRadius: 999,
     backgroundColor: colors.surfaceRaised,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderStrong,
   },
+  placeLabel: { position: 'absolute', width: 100 },
   meHalo: { position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(198, 244, 50, 0.14)' },
   me: { position: 'absolute', width: 22, height: 22, borderRadius: 11, backgroundColor: '#FFFFFF', borderWidth: 5, borderColor: colors.accent },
   markerWrap: { position: 'absolute', width: 100, alignItems: 'center' },

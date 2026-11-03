@@ -42,8 +42,15 @@ export default function GroupScreen() {
     });
   };
 
-  const endsAt = group !== null
-    ? new Date(group.endsAt).toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })
+  const endDate = group !== null ? new Date(group.endsAt) : null;
+  const endsAt = endDate !== null
+    ? endDate.toLocaleDateString('nl-BE', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        // het jaar alleen tonen als het niet dit jaar is
+        year: endDate.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
+      })
     : '';
 
   return (
