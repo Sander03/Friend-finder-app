@@ -13,17 +13,19 @@ create table public.profiles (
 create table public.groups (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 1 and 40),
+  -- Waar de groep is (festival, park, strand...). Mag leeg zijn.
   event_name text not null default '',
   join_code text not null unique,
-  -- Midden van het evenemententerrein, gebruikt als demo-positie.
-  center_lat double precision not null,
-  center_lng double precision not null,
+  -- Alleen voor de demo-groep: het midden van het terrein, gebruikt als demo-positie.
+  -- Gewone groepen hebben geen vaste plek en werken overal.
+  center_lat double precision,
+  center_lng double precision,
   -- Na dit tijdstip stopt het delen van locaties automatisch.
   ends_at timestamptz not null,
   created_at timestamptz not null default now()
 );
 
--- Herkenningspunten op het terrein (podia, bar, ingang...).
+-- Optionele herkenningspunten (podia, bar, ingang...), bv. op een festivalterrein.
 create table public.places (
   id uuid primary key default gen_random_uuid(),
   group_id uuid not null references public.groups (id) on delete cascade,
@@ -98,7 +100,7 @@ begin
     raise exception 'Geen groep gevonden met deze code';
   end if;
   if g.ends_at <= now() then
-    raise exception 'Dit evenement is al voorbij';
+    raise exception 'Deze groep is verlopen';
   end if;
   if (select count(*) from group_members where group_id = g.id) >= 20 then
     raise exception 'Deze groep is vol (max. 20)';
@@ -107,9 +109,44 @@ begin
   insert into group_members (group_id, user_id, display_name, color)
   select g.id, auth.uid(), p.display_name, next_member_color(g.id)
   from profiles p where p.id = auth.uid()
-  on conflict (group_id, user_id) do nothing;
+  -- Al lid? Dan wordt deze groep gewoon terug je huidige groep.
+  on conflict (group_id, user_id) do update set joined_at = now();
 
   return g.id;
+end;
+$$;
+
+-- Nieuwe groep, overal te gebruiken (park, strand, festival...). Wie ze maakt, wordt meteen lid.
+-- Het delen stopt automatisch na 24 uur.
+create or replace function public.create_group(p_name text, p_place text default '')
+returns uuid language plpgsql security definer set search_path = public as $$
+declare
+  gid uuid;
+  code text;
+begin
+  if auth.uid() is null then
+    raise exception 'Niet aangemeld';
+  end if;
+  if char_length(trim(coalesce(p_name, ''))) not between 1 and 40 then
+    raise exception 'Geef je groep een naam (max. 40 tekens)';
+  end if;
+
+  -- Code van 6 tekens zonder tekens die op elkaar lijken (0/O, 1/I).
+  loop
+    select string_agg(substr('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 1 + floor(random() * 32)::int, 1), '')
+      into code from generate_series(1, 6);
+    exit when not exists (select 1 from groups where join_code = code);
+  end loop;
+
+  insert into groups (name, event_name, join_code, ends_at)
+  values (trim(p_name), left(trim(coalesce(p_place, '')), 40), code, now() + interval '24 hours')
+  returning id into gid;
+
+  insert into group_members (group_id, user_id, display_name, color)
+  select gid, auth.uid(), p.display_name, next_member_color(gid)
+  from profiles p where p.id = auth.uid();
+
+  return gid;
 end;
 $$;
 
@@ -151,7 +188,7 @@ create policy "places: leden lezen" on public.places for select using (public.is
 create policy "members: leden lezen" on public.group_members for select using (public.is_member(group_id));
 create policy "members: groep verlaten" on public.group_members for delete using (user_id = auth.uid());
 
--- Locaties zijn alleen zichtbaar voor leden, en alleen zolang het evenement loopt.
+-- Locaties zijn alleen zichtbaar voor leden, en alleen zolang de groep loopt.
 create policy "locations: leden lezen" on public.locations for select using (
   public.is_member(group_id) and public.group_is_live(group_id)
 );

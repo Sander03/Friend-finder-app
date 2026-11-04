@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import { formatDistance, isStale, offsetMeters, type LatLng } from '../lib/geo';
+import { distanceMeters, formatDistance, isStale, offsetMeters, type LatLng } from '../lib/geo';
 import { colors } from '../theme';
 import type { Member, Place } from '../types/Group';
 import { Text } from './primitives/Text';
@@ -15,17 +15,20 @@ interface RadarProps {
 const MIN_RANGE_M = 60;
 const MARKER = 38;
 const PLACE_RADIUS_M = 10;
+const PLACES_WITHIN_M = 1000;
 
 // Plattegrond rond jezelf, noorden boven. Schaalt mee zodat iedereen in beeld is.
-export function Radar({ me, members, places, onSelectMember }: RadarProps) {
+export function Radar({ me, members, places: allPlaces, onSelectMember }: RadarProps) {
   const [size, setSize] = useState(0);
   const onLayout = (e: LayoutChangeEvent) => setSize(Math.min(e.nativeEvent.layout.width, e.nativeEvent.layout.height));
 
+  // Herkenningspunten alleen tonen als je in de buurt bent (bv. op het festivalterrein).
+  const places = allPlaces.filter((p) => distanceMeters(me, p) <= PLACES_WITHIN_M);
   const located = members.filter((m) => m.location !== null);
   const offsets = [...located.map((m) => offsetMeters(me, m.location!)), ...places.map((p) => offsetMeters(me, p))];
   const furthest = Math.max(MIN_RANGE_M, ...offsets.map((o) => Math.max(Math.abs(o.east), Math.abs(o.north))));
   // Afgerond naar een mooi getal voor de ringen.
-  const range = [50, 75, 100, 125, 150, 200, 300, 400, 600, 1000, 2000, 3000].find((r) => r >= furthest * 1.08) ?? furthest * 1.08;
+  const range = [50, 75, 100, 125, 150, 200, 300, 400, 600, 1000, 2000, 3000, 5000, 10000, 25000, 50000].find((r) => r >= furthest * 1.08) ?? furthest * 1.08;
 
   const half = size / 2;
   const scale = (half - MARKER) / range;

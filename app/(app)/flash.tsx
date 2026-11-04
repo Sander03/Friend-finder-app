@@ -29,7 +29,7 @@ export default function FlashScreen() {
         </Text>
       </View>
       <Pressable
-        onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+        onPress={() => (router.canGoBack() ? router.back() : router.replace('/map'))}
         accessibilityRole="button"
         style={styles.stop}
         testID="stop-flash"

@@ -43,7 +43,13 @@ export default function LoginScreen() {
       setError(
         message.includes('Invalid login')
           ? 'E-mailadres of wachtwoord klopt niet.'
-          : message !== ''
+          : message.includes('Email not confirmed')
+            ? 'Bevestig eerst je e-mailadres via de link in je mailbox.'
+            : message.includes('already registered')
+              ? 'Er bestaat al een account met dit e-mailadres. Meld je aan.'
+              : message.includes('Password should be')
+                ? 'Kies een wachtwoord van minstens 6 tekens.'
+                : message !== ''
             ? message
             : 'Er ging iets mis. Probeer opnieuw.',
       );
@@ -58,7 +64,7 @@ export default function LoginScreen() {
             <Icon name="location" size={30} color={colors.onAccent} />
           </View>
           <Text size="xxl" weight="bold" display>Waarbenje</Text>
-          <Text color={colors.textMuted}>Vind je vrienden terug op festivals en evenementen.</Text>
+          <Text color={colors.textMuted}>Vind je vrienden terug, waar je ook bent: in het park, op het strand of op een festival.</Text>
         </Stack>
 
         {!isSupabaseConfigured && (

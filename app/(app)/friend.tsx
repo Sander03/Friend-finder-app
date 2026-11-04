@@ -18,7 +18,7 @@ import { colors } from '../../src/theme';
 function BackButton() {
   return (
     <Pressable
-      onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+      onPress={() => (router.canGoBack() ? router.back() : router.replace('/map'))}
       accessibilityRole="button"
       accessibilityLabel="Terug naar de kaart"
       style={styles.back}
@@ -39,7 +39,14 @@ export default function FriendScreen() {
     return (
       <Screen>
         <BackButton />
-        <EmptyState title="Vriend niet gevonden" description="Deze vriend deelt op dit moment geen locatie." />
+        <EmptyState
+          title="Vriend niet gevonden"
+          description={
+            me === null
+              ? 'Zet je locatie aan om te zien waar je vriend is.'
+              : 'Deze vriend deelt op dit moment geen locatie.'
+          }
+        />
       </Screen>
     );
   }
@@ -47,6 +54,7 @@ export default function FriendScreen() {
   const loc = member.location;
   const meters = distanceMeters(me, loc);
   const bearing = bearingDegrees(me, loc);
+  const label = placeLabel(loc, places);
 
   return (
     <Screen padding="md">
@@ -65,7 +73,7 @@ export default function FriendScreen() {
         <Stack gap="sm" align="center">
           <Text size="xxl" weight="bold" display testID="distance">{formatDistance(meters)}</Text>
           <Text weight="medium" align="center">Richting het {compassWord(bearing)}</Text>
-          <Text color={colors.textMuted} align="center">{placeLabel(loc, places)}</Text>
+          {label !== null && <Text color={colors.textMuted} align="center">{label}</Text>}
           {loc.accuracy !== null && (
             <View style={{ alignSelf: 'center' }}>
               <Badge label={`GPS ± ${Math.round(loc.accuracy)} m`} />

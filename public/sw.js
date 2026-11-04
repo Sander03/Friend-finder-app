@@ -1,7 +1,8 @@
 // Service worker van Waarbenje.
 // - De app zelf (HTML, JS, iconen) wordt bewaard, zodat ze ook opent bij slecht bereik.
 // - Verzoeken naar Supabase gaan altijd naar het netwerk: locaties moeten vers zijn.
-const CACHE = 'waarbenje-v1';
+// Verhoog het versienummer bij wijzigingen: oude caches worden dan bij het activeren gewist.
+const CACHE = 'waarbenje-v2';
 const APP_SHELL = ['/', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -16,37 +17,32 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+const save = (request, response) => {
+  if (response.ok) {
+    const copy = response.clone();
+    caches.open(CACHE).then((cache) => cache.put(request, copy));
+  }
+  return response;
+};
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Pagina's: eerst netwerk, bij geen verbinding de bewaarde versie.
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then((hit) => hit || caches.match('/'))),
-    );
+  // Bestanden met een versie-hash in de naam (/_expo/static/...) veranderen nooit: eerst de cache.
+  if (url.pathname.startsWith('/_expo/static/') || url.pathname.startsWith('/icons/')) {
+    event.respondWith(caches.match(request).then((hit) => hit || fetch(request).then((res) => save(request, res))));
     return;
   }
 
-  // Scripts, stijlen en afbeeldingen: eerst de cache, anders netwerk en bewaren.
+  // Al de rest (pagina's, manifest...): eerst het netwerk, zodat je altijd de nieuwste versie krijgt.
+  // Zonder verbinding valt de app terug op de bewaarde versie.
   event.respondWith(
-    caches.match(request).then(
-      (hit) =>
-        hit ||
-        fetch(request).then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        }),
-    ),
+    fetch(request)
+      .then((res) => save(request, res))
+      .catch(() =>
+        caches.match(request).then((hit) => hit || (request.mode === 'navigate' ? caches.match('/') : Response.error())),
+      ),
   );
 });

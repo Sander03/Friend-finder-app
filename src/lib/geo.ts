@@ -64,3 +64,18 @@ export function timeAgo(iso: string, now: number = Date.now()): string {
 export function isStale(iso: string, now: number = Date.now()): boolean {
   return now - new Date(iso).getTime() > 10 * 60_000;
 }
+
+// Hoe lang een groep nog loopt, bv. "nog 23 u" of "verlopen".
+export function timeLeft(iso: string, now: number = Date.now()): string {
+  const minutes = Math.floor((new Date(iso).getTime() - now) / 60_000);
+  if (minutes <= 0) return 'verlopen';
+  if (minutes < 60) return `nog ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 48) return `nog ${hours} u`;
+  const days = Math.floor(hours / 24);
+  return days < 60 ? `nog ${days} dagen` : `nog ${Math.floor(days / 30)} maanden`;
+}
+
+export function isExpired(iso: string, now: number = Date.now()): boolean {
+  return new Date(iso).getTime() <= now;
+}

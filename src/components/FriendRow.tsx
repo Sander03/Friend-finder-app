@@ -13,16 +13,19 @@ interface FriendRowProps {
   onPress: () => void;
 }
 
-export function placeLabel(point: LatLng, places: Place[]): string {
+// Dichtstbijzijnde herkenningspunt, als de groep er heeft (bv. podia op een festival).
+export function placeLabel(point: LatLng, places: Place[]): string | null {
   const closest = nearest(point, places);
-  if (closest === null) return 'Op het terrein';
+  if (closest === null || closest.meters > 500) return null;
   return closest.meters < 40 ? `Bij ${closest.item.name}` : `Richting ${closest.item.name}`;
 }
 
 export function FriendRow({ member, me, places, onPress }: FriendRowProps) {
   const loc = member.location;
   const stale = loc !== null && isStale(loc.updatedAt);
-  const status = loc === null ? 'Deelt geen locatie' : `${placeLabel(loc, places)} · ${timeAgo(loc.updatedAt)}`;
+  const label = loc !== null ? placeLabel(loc, places) : null;
+  const status =
+    loc === null ? 'Deelt geen locatie' : label !== null ? `${label} · ${timeAgo(loc.updatedAt)}` : `Gezien ${timeAgo(loc.updatedAt)}`;
   const distance = loc !== null && me !== null ? formatDistance(distanceMeters(me, loc)) : '–';
 
   return (

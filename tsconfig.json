@@ -11,6 +11,7 @@
         "./src/*"
       ]
     },
+    "module": "esnext",
     "moduleResolution": "bundler"
   },
   "include": [

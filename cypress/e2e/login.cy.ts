@@ -22,7 +22,7 @@ describe('Login screen', () => {
     cy.contains('Account maken').should('be.visible');
   });
 
-  it('logs in with valid credentials and shows the friends map', () => {
+  it('logs in, shows the home page and opens the friends map', () => {
     const email = Cypress.env('email') as string | undefined;
     const password = Cypress.env('password') as string | undefined;
     if (!email || !password) {
@@ -35,6 +35,9 @@ describe('Login screen', () => {
     cy.get('[data-testid="login-button"]').click();
 
     cy.location('pathname').should('eq', '/');
+    cy.contains('Jouw groepen').should('be.visible');
+    cy.get('[data-testid="group-BENDE1"]').click();
+    cy.location('pathname').should('eq', '/map');
     cy.contains('Vrienden').should('be.visible');
     cy.get('[data-testid="friend-Lotte"]').click();
     cy.location('pathname').should('eq', '/friend');

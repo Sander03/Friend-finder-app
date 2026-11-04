@@ -1,6 +1,14 @@
 import { ScrollViewStyleReset } from 'expo-router/html';
 import type { PropsWithChildren } from 'react';
 
+// Alleen in de gepubliceerde versie: tijdens het ontwikkelen zou de cache oude code blijven tonen.
+const registerServiceWorker =
+  "if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function (e) { console.warn('Service worker niet geregistreerd', e); }); }); }";
+
+// Tijdens het ontwikkelen: een eerder geregistreerde service worker en zijn cache opruimen.
+const removeServiceWorker =
+  "if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(function (regs) { if (regs.length === 0) return; Promise.all(regs.map(function (r) { return r.unregister(); })).then(function () { return caches.keys(); }).then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k); })); }).then(function () { location.reload(); }); }); }";
+
 // HTML-sjabloon voor de web-build (PWA): manifest, iconen, lettertypes en service worker.
 export default function Root({ children }: PropsWithChildren) {
   return (
@@ -10,7 +18,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
         <title>Waarbenje</title>
-        <meta name="description" content="Vind je vrienden terug op festivals en evenementen." />
+        <meta name="description" content="Vind je vrienden terug, waar je ook bent: in het park, op het strand of op een festival." />
         <meta name="theme-color" content="#0E0F13" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" type="image/png" href="/icons/icon-192.png" />
@@ -27,12 +35,7 @@ export default function Root({ children }: PropsWithChildren) {
         />
         <ScrollViewStyleReset />
         <style dangerouslySetInnerHTML={{ __html: 'html, body { background-color: #0E0F13; }' }} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function (e) { console.warn('Service worker niet geregistreerd', e); }); }); }",
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: process.env.NODE_ENV === 'production' ? registerServiceWorker : removeServiceWorker }} />
       </head>
       <body>{children}</body>
     </html>
