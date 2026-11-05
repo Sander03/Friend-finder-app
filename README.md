@@ -54,8 +54,8 @@ Privacy zit in het ontwerp: je locatie is alleen zichtbaar voor je groep, en het
 
 | | |
 | --- | --- |
-| E-mail | `[TEST-EMAIL]` |
-| Wachtwoord | `[TEST-WACHTWOORD]` |
+| E-mail | `niels@gmail.com` |
+| Wachtwoord | `niels01` |
 
 Dit testaccount zit in de demo-groep **De Bende** (code `BENDE1`) met vier vrienden. Een nieuw account maken kan ook: elk nieuw account komt automatisch in de demo-groep.
 
@@ -112,7 +112,7 @@ Importeer de GitHub-repo in Vercel. `vercel.json` bevat de build-instellingen. V
 
 ```sh
 npm run typecheck
-npx cypress run --env email=[TEST-EMAIL],password=[TEST-WACHTWOORD]   # met de app op poort 8081
+npx cypress run --env email=niels@gmail.com,password=niels01   # met de app op poort 8081
 npm run storybook   # componenten bekijken
 ```
 
