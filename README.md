@@ -9,7 +9,7 @@
   <p align="center">
     Vind je vrienden terug, waar je ook bent: in het park, op het strand of op een festival.
     <br />
-    <a href="[PUBLIEKE-LINK]"><strong>Open de PWA »</strong></a>
+    <a href="https://friend-finder-app-53z9.vercel.app"><strong>Open de PWA »</strong></a>
   </p>
 </div>
 
@@ -29,7 +29,7 @@
 
 In een vol park, op een druk strand of op een festival raak je je vrienden snel kwijt, en "ik zit bij de grote boom" of "ik sta aan de bar" zegt weinig. **Waarbenje** toont je vrienden op een plattegrond rond jou, met de afstand en de richting. Werkt overal: je maakt een groep, deelt de code en iedereen ziet elkaar. Op een festival met herkenningspunten (Main Stage, Food court, ...) zie je ook bij welk punt je vriend staat. Ben je vlakbij maar zie je elkaar nog niet? Dan laat je je scherm in een felle kleur knipperen.
 
-**Publieke link:** [PUBLIEKE-LINK]
+**Publieke link:** [https://friend-finder-app-53z9.vercel.app](https://friend-finder-app-53z9.vercel.app)
 
 Schermen in deze versie:
 
