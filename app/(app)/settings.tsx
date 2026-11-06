@@ -22,7 +22,6 @@ export default function SettingsScreen() {
   const myMemberId = useGroupStore((s) => s.myMemberId);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  // Eerst je gedeelde locatie wissen, zodat je vrienden je niet meer zien na het afmelden.
   const handleLogout = async () => {
     setLoggingOut(true);
     if (myMemberId !== null) await stopSharing(myMemberId).catch(() => {});
@@ -141,7 +140,6 @@ function SettingRow(props: {
         testID={props.testID}
         trackColor={{ false: colors.borderStrong, true: colors.accent }}
         thumbColor={colors.text}
-        // react-native-web gebruikt deze prop voor de kleur van het bolletje als de schakelaar aan staat
         {...({ activeThumbColor: colors.onAccent } as object)}
       />
     </View>

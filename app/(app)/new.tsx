@@ -12,7 +12,6 @@ import { useAuthStore } from '../../src/state/useAuthStore';
 import { useGroupStore } from '../../src/state/useGroupStore';
 import { colors } from '../../src/theme';
 
-// Een nieuwe groep maken of meedoen met de code van je vrienden.
 export default function NewGroupScreen() {
   const { mode } = useLocalSearchParams<{ mode?: 'join' | 'create' }>();
   const user = useAuthStore((s) => s.user);
