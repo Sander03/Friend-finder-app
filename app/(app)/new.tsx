@@ -9,13 +9,13 @@ import { Stack } from '../../src/components/primitives/Stack';
 import { Text } from '../../src/components/primitives/Text';
 import { StyledButton } from '../../src/components/StyledButton';
 import { useAuthStore } from '../../src/state/useAuthStore';
-import { useGroupStore } from '../../src/state/useGroupStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
 export default function NewGroupScreen() {
   const { mode } = useLocalSearchParams<{ mode?: 'join' | 'create' }>();
   const user = useAuthStore((s) => s.user);
-  const { join, create } = useGroupStore();
+  const { join, create } = useGroups();
 
   const [code, setCode] = useState('');
   const [joinError, setJoinError] = useState('');

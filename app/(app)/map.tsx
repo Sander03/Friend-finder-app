@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { FriendRow } from '../../src/components/FriendRow';
 import { goBack, IconButton } from '../../src/components/IconButton';
@@ -12,20 +11,16 @@ import { Spinner } from '../../src/components/primitives/Spinner';
 import { Text } from '../../src/components/primitives/Text';
 import { Radar } from '../../src/components/Radar';
 import { StyledButton } from '../../src/components/StyledButton';
-import { useKeepAwake } from '../../src/hooks/useKeepAwake';
-import { useLocationSharing } from '../../src/hooks/useLocationSharing';
-import { stopSharing } from '../../src/services/groupService';
-import { useGroupStore } from '../../src/state/useGroupStore';
-import { useSettingsStore } from '../../src/state/useSettingsStore';
+import { useGroupUpdates } from '../../src/hooks/useGroupUpdates';
+import { useGroups } from '../../src/state/GroupContext';
+import { useSettings } from '../../src/state/SettingsContext';
 import { colors, radius } from '../../src/theme';
 import type { Member } from '../../src/types/Group';
 
 export default function MapScreen() {
-  const { group, members, places, myMemberId, myPosition, status, error } = useGroupStore();
-  const { autoShare, keepAwake, mapView, update } = useSettingsStore();
-  const [sharing, setSharing] = useState(autoShare);
-  const permission = useLocationSharing(sharing);
-  useKeepAwake(keepAwake && group !== null);
+  const { group, members, places, myMemberId, myPosition, status, error } = useGroups();
+  const { mapView, update } = useSettings();
+  useGroupUpdates();
 
   if (status === 'loading' || status === 'idle') {
     return (
@@ -59,11 +54,6 @@ export default function MapScreen() {
   const live = friends.filter((m) => m.location !== null).length;
   const openFriend = (member: Member) => router.push({ pathname: '/friend', params: { id: member.id } });
 
-  const toggleSharing = () => {
-    if (sharing && myMemberId !== null) void stopSharing(myMemberId);
-    setSharing(!sharing);
-  };
-
   return (
     <Screen padding="none" scrollable={false}>
       <View style={styles.header}>
@@ -72,7 +62,7 @@ export default function MapScreen() {
           {group.eventName !== '' && <Text size="sm" color={colors.textMuted}>{group.eventName}</Text>}
           <Text size="xl" weight="bold" display>{group.name}</Text>
         </View>
-        <Badge label={sharing ? 'Live' : 'Gepauzeerd'} variant={sharing ? 'success' : 'warning'} />
+        <Badge label="Demo" variant="warning" />
         <IconButton icon="people-outline" label="Groep en uitnodigen" onPress={() => router.push('/group')} testID="group-button" />
       </View>
 
@@ -80,9 +70,7 @@ export default function MapScreen() {
         <View style={styles.notice}>
           <Icon name="information-circle-outline" size={18} color={colors.warning} />
           <Text size="sm" color={colors.warning}>
-            {permission === 'denied'
-              ? 'Geen toegang tot je locatie. Dit is een demo-groep, dus we tonen je op een plek op het terrein.'
-              : 'Dit is een demo-groep en je bent er niet in de buurt. We tonen je op een plek op het terrein.'}
+            Je eigen locatie delen komt in een volgende versie. Voorlopig tonen we je op een vaste plek op het terrein.
           </Text>
         </View>
       )}
@@ -114,17 +102,11 @@ export default function MapScreen() {
           ) : (
             <Radar me={myPosition} members={friends} places={places} onSelectMember={openFriend} />
           )
-        ) : permission === 'denied' || !sharing ? (
-          <EmptyState
-            title={sharing ? 'Geen toegang tot je locatie' : 'Locatie gepauzeerd'}
-            description={
-              sharing
-                ? 'Geef Waarbenje toegang tot je locatie in je browserinstellingen om je vrienden te vinden.'
-                : 'Deel je locatie om je vrienden op de kaart te zien.'
-            }
-          />
         ) : (
-          <Spinner size="large" />
+          <EmptyState
+            title="Kaart nog niet beschikbaar"
+            description="Locatie delen komt in een volgende versie. Probeer de kaart in de demo-groep De Bende (code BENDE1)."
+          />
         )}
       </View>
 
@@ -144,13 +126,6 @@ export default function MapScreen() {
             />
           ))}
         </ScrollView>
-        <StyledButton
-          label={sharing ? 'Pauzeer mijn locatie' : 'Deel mijn locatie'}
-          icon={sharing ? 'pause' : 'navigate'}
-          variant={sharing ? 'secondary' : 'primary'}
-          onPress={toggleSharing}
-          testID="share-toggle"
-        />
       </View>
     </Screen>
   );

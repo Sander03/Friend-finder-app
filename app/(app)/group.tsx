@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Share, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { goBack, IconButton } from '../../src/components/IconButton';
 import { Avatar } from '../../src/components/primitives/Avatar';
 import { Card } from '../../src/components/primitives/Card';
@@ -12,13 +12,13 @@ import { Stack } from '../../src/components/primitives/Stack';
 import { Text } from '../../src/components/primitives/Text';
 import { StyledButton } from '../../src/components/StyledButton';
 import { useAuthStore } from '../../src/state/useAuthStore';
-import { useGroupStore } from '../../src/state/useGroupStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
 // Details van je actieve groep: code delen, leden en groep verlaten.
 export default function GroupScreen() {
   const user = useAuthStore((s) => s.user);
-  const { group, members, leave } = useGroupStore();
+  const { group, members, leave } = useGroups();
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [error, setError] = useState('');
@@ -35,12 +35,6 @@ export default function GroupScreen() {
       </Screen>
     );
   }
-
-  const shareCode = () => {
-    Share.share({ message: `Doe mee met ${group.name} op Waarbenje met code ${group.joinCode}` }).catch(() => {
-      // Delen wordt niet door elke browser ondersteund; de code staat al op het scherm.
-    });
-  };
 
   const handleLeave = async () => {
     if (user === null) return;
@@ -90,7 +84,6 @@ export default function GroupScreen() {
             </Text>
           </Stack>
         </Card>
-        <StyledButton label="Code delen" icon="share-outline" onPress={shareCode} />
 
         <Card>
           <Row gap="md" align="flex-start">
@@ -98,9 +91,9 @@ export default function GroupScreen() {
               <Icon name="shield-checkmark-outline" size={22} color={colors.accent} />
             </View>
             <Stack gap="sm" padding="md" flex={1}>
-              <Text weight="medium">Locatie delen stopt vanzelf</Text>
+              <Text weight="medium">Groep stopt vanzelf</Text>
               <Text size="sm" color={colors.textMuted}>
-                Alleen zichtbaar voor deze groep, tot {endsAt}. Je kan altijd pauzeren.
+                Alleen zichtbaar voor de leden van deze groep, tot {endsAt}.
               </Text>
             </Stack>
           </Row>
@@ -121,7 +114,7 @@ export default function GroupScreen() {
         <Stack gap="sm">
           {confirmLeave && (
             <Text size="sm" color={colors.danger} align="center">
-              Zeker? Je gedeelde locatie wordt gewist en je hebt de code nodig om terug te komen.
+              Zeker? Je hebt de code nodig om terug te komen.
             </Text>
           )}
           {error !== '' && <Text size="sm" color={colors.danger} align="center">{error}</Text>}

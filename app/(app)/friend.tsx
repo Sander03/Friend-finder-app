@@ -12,7 +12,7 @@ import { Stack } from '../../src/components/primitives/Stack';
 import { Text } from '../../src/components/primitives/Text';
 import { StyledButton } from '../../src/components/StyledButton';
 import { bearingDegrees, compassWord, distanceMeters, formatDistance, timeAgo } from '../../src/lib/geo';
-import { useGroupStore } from '../../src/state/useGroupStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
 function BackButton() {
@@ -31,9 +31,8 @@ function BackButton() {
 
 export default function FriendScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const member = useGroupStore((s) => s.members.find((m) => m.id === id));
-  const me = useGroupStore((s) => s.myPosition);
-  const places = useGroupStore((s) => s.places);
+  const { members, myPosition: me, places } = useGroups();
+  const member = members.find((m) => m.id === id);
 
   if (member === undefined || member.location === null || me === null) {
     return (
@@ -43,7 +42,7 @@ export default function FriendScreen() {
           title="Vriend niet gevonden"
           description={
             me === null
-              ? 'Zet je locatie aan om te zien waar je vriend is.'
+              ? 'Je eigen locatie delen komt in een volgende versie. Probeer het in de demo-groep De Bende.'
               : 'Deze vriend deelt op dit moment geen locatie.'
           }
         />

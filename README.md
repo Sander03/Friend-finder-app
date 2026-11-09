@@ -40,13 +40,13 @@ Schermen in deze versie:
 | **Kaart** (`/map`) | Schakel tussen een radar (jou in het midden, je vrienden rondom) en een echte OpenStreetMap-kaart. Tik op een vriend om die te zoeken. Eronder staat een lijst met afstand en "laatst gezien". Locaties komen live binnen (Supabase Realtime). |
 | **Vriend zoeken** (`/friend`) | Kompasroos met een pijl naar je vriend, afstand, herkenningspunt en bericht. |
 | **Flash** (`/flash`) | Knippert in de kleur van je vriend, zodat die je in de menigte ziet. |
-| **Groep** (`/group`) | Groepscode delen, leden bekijken, groep verlaten. |
+| **Groep** (`/group`) | Groepscode bekijken, leden bekijken, groep verlaten. |
 | **Groep toevoegen** (`/new`) | Een nieuwe groep maken (voor eender welke plek) of meedoen met een code. |
-| **Instellingen** (`/settings`) | Profiel, locatie meteen delen aan/uit, scherm aan laten, privacy-uitleg, afmelden. |
+| **Instellingen** (`/settings`) | Profiel, privacy-uitleg, afmelden. |
 
 Privacy zit in het ontwerp: je locatie is alleen zichtbaar voor je groep, en het delen stopt automatisch: een nieuwe groep vervalt na 24 uur (afgedwongen met Row Level Security in de database).
 
-> **Demo-modus:** elk nieuw account zit meteen in de demo-groep **De Bende** (code `BENDE1`) op een festivalterrein. Ben je daar niet in de buurt (meer dan 3 km) of geef je geen toegang tot je locatie, dan zet de app je op een vaste plek op dat terrein, zodat je de demo altijd ziet werken. Groepen die je zelf maakt, gebruiken altijd je echte locatie, waar je ook bent.
+> **Geen native features in deze versie:** de PWA gebruikt nog geen GPS, wake lock of deelmenu. Elk nieuw account zit meteen in de demo-groep **De Bende** (code `BENDE1`) op een festivalterrein, en de app zet je daar op een vaste plek, zodat de kaart altijd werkt. Je eigen locatie live delen staat op de roadmap.
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
@@ -66,10 +66,8 @@ Dit testaccount zit in de demo-groep **De Bende** (code `BENDE1`) met vier vrien
 * [Expo](https://expo.dev) (SDK 52) en [Expo Router](https://docs.expo.dev/router/introduction/), vertrokken van de UCLL-boilerplate
 * React Native en React Native Web
 * [Supabase](https://supabase.com): Postgres-database, Auth en Realtime (gehost)
-* [Zustand](https://zustand-demo.pmnd.rs) voor de state
+* [Zustand](https://zustand-demo.pmnd.rs) voor de login (useAuthStore) en [React Context](https://react.dev/learn/passing-data-deeply-with-context) voor groepen en instellingen
 * [Leaflet](https://leafletjs.com) met [OpenStreetMap](https://www.openstreetmap.org)-tegels voor de echte kaart, net als in de cursusdemo [pwa-locate-me](https://github.com/UCLL-Mobile-Applications-demos/pwa-locate-me)
-* De Geolocation-API van de browser (`navigator.geolocation.watchPosition`) om je locatie live te volgen
-* `expo-location` (in de browser: de Geolocation API)
 * Gehost op [Vercel](https://vercel.com) als PWA (manifest + service worker)
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
@@ -89,9 +87,17 @@ Dit testaccount zit in de demo-groep **De Bende** (code `BENDE1`) met vier vrien
 
 ### Lokaal draaien
 
+Maak eerst in de hoofdmap een bestand `.env` met de gegevens van je eigen Supabase-project (**Project Settings > API**):
+
+```sh
+EXPO_PUBLIC_SUPABASE_URL=https://<jouw-project>.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<jouw anon/publishable key>
+```
+
+Gebruik nooit de secret of service_role key: die hoort niet in een app.
+
 ```sh
 npm install
-cp .env.example .env   # vul de Supabase-URL en de anon/publishable key in
 npm run web            # opent op http://localhost:8081
 ```
 
@@ -129,7 +135,8 @@ Wat ze nodig hebben: snel zien waar iedereen is, zonder hun locatie voor altijd 
 
 ### Wat ik ga bouwen (roadmap)
 
-- [x] **PWA (deze versie):** aanmelden, groep met code, live plattegrond rond jezelf, vriend zoeken met richting en afstand, flash-scherm, zelf een groep maken voor eender welke plek, automatisch stoppen na 24 uur.
+- [x] **PWA (deze versie, zonder native features):** aanmelden, groep met code, plattegrond en kaart met je vrienden (in de demo-groep sta je op een vaste plek), vriend zoeken met richting en afstand, flash-scherm, zelf een groep maken voor eender welke plek, automatisch stoppen na 24 uur.
+- [ ] **Native features in de PWA:** je eigen locatie live delen (GPS), het scherm aan laten tijdens het zoeken en de groepscode delen via het deelmenu van je gsm.
 - [ ] **Foto-pin "Ik sta hier":** een foto van wat je ziet (een vlag, een kraam) met een korte tekst, en verzamelpunten.
 - [ ] **Echte kaart van het terrein:** plattegronden en podia per evenement, offline beschikbaar.
 - [ ] **Native app (Expo dev build):** kompas dat meedraait met je gsm, locatie op de achtergrond, pushmeldingen ("Lotte vraagt om te flashen").

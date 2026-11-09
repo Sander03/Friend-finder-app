@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Switch, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { goBack, IconButton } from '../../src/components/IconButton';
 import { Avatar } from '../../src/components/primitives/Avatar';
 import { Card } from '../../src/components/primitives/Card';
@@ -12,14 +12,12 @@ import { Text } from '../../src/components/primitives/Text';
 import { StyledButton } from '../../src/components/StyledButton';
 import { stopSharing } from '../../src/services/groupService';
 import { useAuthStore } from '../../src/state/useAuthStore';
-import { useGroupStore } from '../../src/state/useGroupStore';
-import { useSettingsStore } from '../../src/state/useSettingsStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
 export default function SettingsScreen() {
   const { user, logout } = useAuthStore();
-  const { autoShare, keepAwake, update } = useSettingsStore();
-  const myMemberId = useGroupStore((s) => s.myMemberId);
+  const myMemberId = useGroups().myMemberId;
   const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -57,38 +55,12 @@ export default function SettingsScreen() {
         />
 
         <Stack gap="sm">
-          <SectionTitle>Locatie</SectionTitle>
-          <Card>
-            <SettingRow
-              icon="navigate-outline"
-              title="Meteen delen op de kaart"
-              description="Je locatie delen zodra je de kaart opent. Uit: je kiest telkens zelf."
-              value={autoShare}
-              onChange={(v) => update({ autoShare: v })}
-              testID="setting-auto-share"
-            />
-            <View style={styles.divider} />
-            <SettingRow
-              icon="sunny-outline"
-              title="Scherm aan laten"
-              description="Je scherm gaat niet uit zolang de kaart open is, handig tijdens het zoeken."
-              value={keepAwake}
-              onChange={(v) => update({ keepAwake: v })}
-              testID="setting-keep-awake"
-            />
-          </Card>
-          <Text size="sm" color={colors.textMuted}>
-            Toegang tot je locatie geef of weiger je in de instellingen van je browser of gsm.
-          </Text>
-        </Stack>
-
-        <Stack gap="sm">
           <SectionTitle>Privacy</SectionTitle>
           <Card>
             <Stack padding="md" gap="sm">
               <InfoLine icon="people-outline" text="Alleen leden van je groep zien je locatie." />
               <InfoLine icon="time-outline" text="Een nieuwe groep vervalt na 24 uur; daarna is niemands locatie nog zichtbaar." />
-              <InfoLine icon="pause-outline" text="Pauzeren of de groep verlaten wist je gedeelde locatie meteen." />
+              <InfoLine icon="navigate-outline" text="Je eigen locatie delen komt in een volgende versie; nu toont de kaart je op een vaste plek." />
             </Stack>
           </Card>
         </Stack>
@@ -118,34 +90,6 @@ function SectionTitle({ children }: { children: string }) {
   );
 }
 
-function SettingRow(props: {
-  icon: React.ComponentProps<typeof Icon>['name'];
-  title: string;
-  description: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-  testID?: string;
-}) {
-  return (
-    <View style={styles.row}>
-      <Icon name={props.icon} size={22} color={colors.accent} />
-      <View style={{ flex: 1, gap: 2 }}>
-        <Text weight="medium">{props.title}</Text>
-        <Text size="sm" color={colors.textMuted}>{props.description}</Text>
-      </View>
-      <Switch
-        value={props.value}
-        onValueChange={props.onChange}
-        accessibilityLabel={props.title}
-        testID={props.testID}
-        trackColor={{ false: colors.borderStrong, true: colors.accent }}
-        thumbColor={colors.text}
-        {...({ activeThumbColor: colors.onAccent } as object)}
-      />
-    </View>
-  );
-}
-
 function InfoLine({ icon, text }: { icon: React.ComponentProps<typeof Icon>['name']; text: string }) {
   return (
     <View style={styles.info}>
@@ -160,7 +104,5 @@ function InfoLine({ icon, text }: { icon: React.ComponentProps<typeof Icon>['nam
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   profile: { flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16 },
-  divider: { height: 1, backgroundColor: colors.border, marginHorizontal: 16 },
   info: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
 });

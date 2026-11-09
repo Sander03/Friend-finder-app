@@ -28,13 +28,7 @@
     "plugins": [
       "expo-router",
       "expo-asset",
-      "expo-font",
-      [
-        "expo-location",
-        {
-          "locationWhenInUsePermission": "Waarbenje toont je locatie aan de vrienden in je groep, zodat jullie elkaar terugvinden."
-        }
-      ]
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

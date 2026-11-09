@@ -3,20 +3,12 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Spinner } from '../../src/components/primitives/Spinner';
 import { useAuthStore } from '../../src/state/useAuthStore';
-import { useGroupStore } from '../../src/state/useGroupStore';
-import { useSettingsStore } from '../../src/state/useSettingsStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
 export default function AppLayout() {
-  const isReady = useAuthStore((s) => s.isReady);
-  const user = useAuthStore((s) => s.user);
-  const load = useGroupStore((s) => s.load);
-  const reset = useGroupStore((s) => s.reset);
-  const loadSettings = useSettingsStore((s) => s.load);
-
-  useEffect(() => {
-    void loadSettings();
-  }, [loadSettings]);
+  const { isReady, user } = useAuthStore();
+  const { load, reset } = useGroups();
 
   useEffect(() => {
     if (user !== null) void load(user.id);

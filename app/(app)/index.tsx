@@ -13,14 +13,14 @@ import { Text } from '../../src/components/primitives/Text';
 import { StyledButton } from '../../src/components/StyledButton';
 import { isExpired, timeLeft } from '../../src/lib/geo';
 import { useAuthStore } from '../../src/state/useAuthStore';
-import { useGroupStore } from '../../src/state/useGroupStore';
+import { useGroups } from '../../src/state/GroupContext';
 import { colors, radius } from '../../src/theme';
 import type { GroupSummary } from '../../src/types/Group';
 
 // Startpagina: je actieve groep, al je groepen en snelkoppelingen.
 export default function HomeScreen() {
   const user = useAuthStore((s) => s.user);
-  const { groups, group, members, myMemberId, status, error, select } = useGroupStore();
+  const { groups, group, members, myMemberId, status, error, select } = useGroups();
 
   const firstName = user?.name.split(' ')[0] ?? '';
   const friends = members.filter((m) => m.id !== myMemberId);
@@ -137,7 +137,7 @@ export default function HomeScreen() {
             <View style={{ flex: 1, gap: 4 }}>
               <Text weight="medium">Jij beslist wie je ziet</Text>
               <Text size="sm" color={colors.textMuted}>
-                Je locatie is alleen zichtbaar voor de groep waarin je de kaart opent, en stopt vanzelf als de groep verloopt.
+                Een groep is alleen zichtbaar voor de leden en stopt vanzelf als ze verloopt.
                 {Platform.OS === 'web' ? ' Tip: zet Waarbenje op je beginscherm via "Toevoegen aan startscherm".' : ''}
               </Text>
             </View>
