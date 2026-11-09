@@ -1,5 +1,3 @@
-// Draai met: npx cypress run --env email=demo@waarbenje.be,password=...
-// (de app moet lopen op http://localhost:8081, bv. via `npm run web`)
 describe('Login screen', () => {
   beforeEach(() => {
     cy.visit('/login');

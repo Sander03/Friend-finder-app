@@ -1,9 +1,3 @@
--- Waarbenje: database voor Supabase (Postgres).
--- Plak dit volledig in de SQL Editor van je Supabase-project en klik op Run.
--- Het script maakt de tabellen, de beveiliging (RLS), realtime en een demo-groep aan.
-
--- ───────────── Tabellen ─────────────
-
 create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text not null check (char_length(display_name) between 1 and 30),
@@ -13,19 +7,14 @@ create table public.profiles (
 create table public.groups (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 1 and 40),
-  -- Waar de groep is (festival, park, strand...). Mag leeg zijn.
   event_name text not null default '',
   join_code text not null unique,
-  -- Alleen voor de demo-groep: het midden van het terrein, gebruikt als demo-positie.
-  -- Gewone groepen hebben geen vaste plek en werken overal.
   center_lat double precision,
   center_lng double precision,
-  -- Na dit tijdstip stopt het delen van locaties automatisch.
   ends_at timestamptz not null,
   created_at timestamptz not null default now()
 );
 
--- Optionele herkenningspunten (podia, bar, ingang...), bv. op een festivalterrein.
 create table public.places (
   id uuid primary key default gen_random_uuid(),
   group_id uuid not null references public.groups (id) on delete cascade,
@@ -34,7 +23,6 @@ create table public.places (
   lng double precision not null
 );
 
--- Een lid is gekoppeld aan een account (user_id), of is een demo-lid zonder account.
 create table public.group_members (
   id uuid primary key default gen_random_uuid(),
   group_id uuid not null references public.groups (id) on delete cascade,
@@ -45,7 +33,6 @@ create table public.group_members (
   unique (group_id, user_id)
 );
 
--- Eén rij per lid: de laatst bekende locatie.
 create table public.locations (
   member_id uuid primary key references public.group_members (id) on delete cascade,
   group_id uuid not null references public.groups (id) on delete cascade,
@@ -54,13 +41,9 @@ create table public.locations (
   accuracy real,
   note text not null default '' check (char_length(note) <= 120),
   updated_at timestamptz not null default now(),
-  -- Alleen voor demo-leden: hoe lang geleden ze "gezien" zijn, zodat de demo altijd vers oogt.
   demo_age interval
 );
 
--- ───────────── Hulpfuncties ─────────────
-
--- security definer: zo roepen de policies op group_members zichzelf niet recursief aan.
 create or replace function public.is_member(gid uuid)
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (select 1 from group_members where group_id = gid and user_id = auth.uid());
@@ -76,7 +59,6 @@ returns boolean language sql stable security definer set search_path = public as
   select exists (select 1 from groups where id = gid and ends_at > now());
 $$;
 
--- Eerste kleur uit het palet die nog vrij is in de groep.
 create or replace function public.next_member_color(gid uuid)
 returns text language sql stable security definer set search_path = public as $$
   select coalesce(
@@ -109,15 +91,12 @@ begin
   insert into group_members (group_id, user_id, display_name, color)
   select g.id, auth.uid(), p.display_name, next_member_color(g.id)
   from profiles p where p.id = auth.uid()
-  -- Al lid? Dan wordt deze groep gewoon terug je huidige groep.
   on conflict (group_id, user_id) do update set joined_at = now();
 
   return g.id;
 end;
 $$;
 
--- Nieuwe groep, overal te gebruiken (park, strand, festival...). Wie ze maakt, wordt meteen lid.
--- Het delen stopt automatisch na 24 uur.
 create or replace function public.create_group(p_name text, p_place text default '')
 returns uuid language plpgsql security definer set search_path = public as $$
 declare
@@ -131,7 +110,6 @@ begin
     raise exception 'Geef je groep een naam (max. 40 tekens)';
   end if;
 
-  -- Code van 6 tekens zonder tekens die op elkaar lijken (0/O, 1/I).
   loop
     select string_agg(substr('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 1 + floor(random() * 32)::int, 1), '')
       into code from generate_series(1, 6);
@@ -150,7 +128,6 @@ begin
 end;
 $$;
 
--- Bij registratie: profiel aanmaken en (voor de demo) meteen lid worden van groep BENDE1.
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 declare
@@ -171,8 +148,6 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- ───────────── Row Level Security ─────────────
-
 alter table public.profiles enable row level security;
 alter table public.groups enable row level security;
 alter table public.places enable row level security;
@@ -188,7 +163,6 @@ create policy "places: leden lezen" on public.places for select using (public.is
 create policy "members: leden lezen" on public.group_members for select using (public.is_member(group_id));
 create policy "members: groep verlaten" on public.group_members for delete using (user_id = auth.uid());
 
--- Locaties zijn alleen zichtbaar voor leden, en alleen zolang de groep loopt.
 create policy "locations: leden lezen" on public.locations for select using (
   public.is_member(group_id) and public.group_is_live(group_id)
 );
@@ -200,18 +174,12 @@ create policy "locations: eigen locatie wijzigen" on public.locations for update
   with check (public.owns_member(member_id) and public.group_is_live(group_id));
 create policy "locations: eigen locatie wissen" on public.locations for delete using (public.owns_member(member_id));
 
--- View die de app leest. security_invoker: de RLS van de onderliggende tabellen blijft gelden.
 create view public.group_locations with (security_invoker = on) as
   select member_id, group_id, lat, lng, accuracy, note,
          coalesce(now() - demo_age, updated_at) as updated_at
   from public.locations;
 
--- ───────────── Realtime ─────────────
-
 alter publication supabase_realtime add table public.locations, public.group_members;
-
--- ───────────── Demo-data ─────────────
--- Een groep met vier vrienden zonder account, zodat de app meteen iets toont.
 
 with g as (
   insert into public.groups (name, event_name, join_code, center_lat, center_lng, ends_at)

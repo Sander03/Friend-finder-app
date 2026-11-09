@@ -7,8 +7,6 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 export const isSupabaseConfigured = supabaseUrl !== '' && supabaseAnonKey !== '';
 
-// Bij het statisch renderen van de web-build (in Node) bestaat `window` niet.
-// Dan bewaren we de sessie nergens; in de browser gebruikt AsyncStorage localStorage.
 const isServer = Platform.OS === 'web' && typeof window === 'undefined';
 const noopStorage = {
   getItem: async () => null,
@@ -29,7 +27,6 @@ export const supabase = createClient(
   },
 );
 
-// Op iOS en Android vernieuwen we de token alleen terwijl de app open staat.
 if (Platform.OS !== 'web') {
   AppState.addEventListener('change', (state) => {
     if (state === 'active') {

@@ -3,13 +3,11 @@ import Svg, { Circle, G, Line, Path, Text as SvgText } from 'react-native-svg';
 import { colors } from '../theme';
 
 interface DirectionDialProps {
-  // richting naar de vriend in graden, 0 = noorden
   bearing: number;
   color: string;
   size?: number;
 }
 
-// Kompasroos met noorden boven en een pijl in de richting van je vriend.
 export function DirectionDial({ bearing, color, size = 280 }: DirectionDialProps) {
   const c = size / 2;
   const r = c - 4;

@@ -1,15 +1,12 @@
 import { ScrollViewStyleReset } from 'expo-router/html';
 import type { PropsWithChildren } from 'react';
 
-// Alleen in de gepubliceerde versie: tijdens het ontwikkelen zou de cache oude code blijven tonen.
 const registerServiceWorker =
   "if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function (e) { console.warn('Service worker niet geregistreerd', e); }); }); }";
 
-// Tijdens het ontwikkelen: een eerder geregistreerde service worker en zijn cache opruimen.
 const removeServiceWorker =
   "if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(function (regs) { if (regs.length === 0) return; Promise.all(regs.map(function (r) { return r.unregister(); })).then(function () { return caches.keys(); }).then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k); })); }).then(function () { location.reload(); }); }); }";
 
-// HTML-sjabloon voor de web-build (PWA): manifest, iconen, lettertypes en service worker.
 export default function Root({ children }: PropsWithChildren) {
   return (
     <html lang="nl">

@@ -11,7 +11,6 @@ interface IconButtonProps {
   testID?: string;
 }
 
-// Vierkante knop met enkel een icoon, bv. terug of instellingen.
 export function IconButton({ icon, label, onPress, testID }: IconButtonProps) {
   return (
     <Pressable
@@ -26,7 +25,6 @@ export function IconButton({ icon, label, onPress, testID }: IconButtonProps) {
   );
 }
 
-// Terug naar het vorige scherm, of naar de startpagina als er geen vorig scherm is.
 export function goBack(fallback: '/' | '/map' = '/') {
   if (router.canGoBack()) router.back();
   else router.replace(fallback);

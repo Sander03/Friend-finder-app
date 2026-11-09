@@ -17,7 +17,6 @@ import { useGroups } from '../../src/state/GroupContext';
 import { colors, radius } from '../../src/theme';
 import type { GroupSummary } from '../../src/types/Group';
 
-// Startpagina: je actieve groep, al je groepen en snelkoppelingen.
 export default function HomeScreen() {
   const user = useAuthStore((s) => s.user);
   const { groups, group, members, myMemberId, status, error, select } = useGroups();

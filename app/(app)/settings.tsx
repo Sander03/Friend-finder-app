@@ -60,7 +60,6 @@ export default function SettingsScreen() {
             <Stack padding="md" gap="sm">
               <InfoLine icon="people-outline" text="Alleen leden van je groep zien je locatie." />
               <InfoLine icon="time-outline" text="Een nieuwe groep vervalt na 24 uur; daarna is niemands locatie nog zichtbaar." />
-              <InfoLine icon="navigate-outline" text="Je eigen locatie delen komt in een volgende versie; nu toont de kaart je op een vaste plek." />
             </Stack>
           </Card>
         </Stack>

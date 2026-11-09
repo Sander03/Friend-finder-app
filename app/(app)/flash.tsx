@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '../../src/components/primitives/Text';
 import { colors, radius } from '../../src/theme';
 
-// Knippert twee keer per seconde in de kleur van je vriend, zodat die je in de menigte ziet.
 export default function FlashScreen() {
   const { name = 'Je vriend', color = colors.accent } = useLocalSearchParams<{ name?: string; color?: string }>();
   const [on, setOn] = useState(true);

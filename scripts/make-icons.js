@@ -1,5 +1,3 @@
-// Genereert de app-iconen (PNG) zonder extra pakketten: donkere achtergrond met een lime locatiepin.
-// Gebruik: node scripts/make-icons.js
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
@@ -29,7 +27,6 @@ function chunk(type, data) {
   return Buffer.concat([len, body, crc]);
 }
 
-// Afstand tot een pin-vorm: cirkel bovenaan met een punt naar onder, en een gat in het midden.
 function pinCoverage(x, y, s) {
   const cx = 0.5 * s;
   const cy = 0.43 * s;
@@ -38,7 +35,6 @@ function pinCoverage(x, y, s) {
   const d = Math.hypot(x - cx, y - cy);
   let inside = d <= r;
   if (!inside && y > cy && y <= tipY) {
-    // driehoek tussen de raaklijnen van de cirkel en de punt
     const t = (tipY - y) / (tipY - cy);
     inside = Math.abs(x - cx) <= r * 0.92 * t;
   }
@@ -70,8 +66,8 @@ function makeIcon(size, padding) {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(size, 0);
   ihdr.writeUInt32BE(size, 4);
-  ihdr[8] = 8; // bit depth
-  ihdr[9] = 2; // RGB
+  ihdr[8] = 8;
+  ihdr[9] = 2;
   return Buffer.concat([
     Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
     chunk('IHDR', ihdr),

@@ -4,7 +4,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 const KEY = 'waarbenje.settings';
 
 interface Settings {
-  // Radar (plattegrond rond jou) of echte kaart (OpenStreetMap).
   mapView: 'radar' | 'map';
 }
 
@@ -16,7 +15,6 @@ const defaults: Settings = { mapView: 'radar' };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
-// Instellingen bewaren we alleen op dit toestel.
 export function SettingsProvider({ children }: PropsWithChildren) {
   const [settings, setSettings] = useState<Settings>(defaults);
 
@@ -26,7 +24,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
         if (saved !== null) setSettings({ ...defaults, ...(JSON.parse(saved) as Partial<Settings>) });
       })
       .catch(() => {
-        // Geen bewaarde instellingen: de standaardwaarden blijven gelden.
       });
   }, []);
 

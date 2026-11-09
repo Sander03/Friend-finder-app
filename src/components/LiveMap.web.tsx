@@ -10,11 +10,9 @@ import { Spinner } from './primitives/Spinner';
 
 export type { LiveMapProps };
 
-// Namen komen van gebruikers: nooit rechtstreeks in HTML zetten.
 const escapeHtml = (text: string) =>
   text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c);
 
-// Echte kaart (OpenStreetMap via Leaflet) met jou en je vrienden, zoals in de cursusdemo "pwa-locate-me".
 export function LiveMap({ me, members, places, onSelectMember }: LiveMapProps) {
   const container = useRef<View>(null);
   const leaflet = useRef<typeof Leaflet | null>(null);
@@ -25,7 +23,6 @@ export function LiveMap({ me, members, places, onSelectMember }: LiveMapProps) {
   const onSelect = useRef(onSelectMember);
   onSelect.current = onSelectMember;
 
-  // Leaflet gebruikt `window`, dus we laden het pas in de browser (niet tijdens de statische build).
   useEffect(() => {
     let cancelled = false;
     let resize: ResizeObserver | null = null;
@@ -57,7 +54,6 @@ export function LiveMap({ me, members, places, onSelectMember }: LiveMapProps) {
       map.current?.remove();
       map.current = null;
     };
-    // De kaart maken we één keer; posities werken we hieronder bij.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -112,7 +108,6 @@ export function LiveMap({ me, members, places, onSelectMember }: LiveMapProps) {
       zIndexOffset: 1000,
     }).addTo(layer.current);
 
-    // Eén keer inzoomen zodat iedereen in beeld is; daarna blijft jouw zoom/positie staan.
     if (!hasFitted.current) {
       hasFitted.current = true;
       fitAll();
@@ -143,7 +138,6 @@ export function LiveMap({ me, members, places, onSelectMember }: LiveMapProps) {
 
 const css = `
 .leaflet-container { background: ${colors.background}; font-family: Inter, system-ui, sans-serif; }
-/* OpenStreetMap-tegels donker maken zodat ze bij de app passen. */
 .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6); }
 .wbj-marker { background: none; border: none; }
 .wbj-pin { width: 38px; height: 38px; margin: 0 auto; border-radius: 50%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font: 700 13px 'Space Grotesk', Inter, sans-serif; cursor: pointer; }

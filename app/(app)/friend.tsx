@@ -42,7 +42,7 @@ export default function FriendScreen() {
           title="Vriend niet gevonden"
           description={
             me === null
-              ? 'Je eigen locatie delen komt in een volgende versie. Probeer het in de demo-groep De Bende.'
+              ? 'Probeer het in de demo-groep De Bende.'
               : 'Deze vriend deelt op dit moment geen locatie.'
           }
         />

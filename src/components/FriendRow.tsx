@@ -13,7 +13,6 @@ interface FriendRowProps {
   onPress: () => void;
 }
 
-// Dichtstbijzijnde herkenningspunt, als de groep er heeft (bv. podia op een festival).
 export function placeLabel(point: LatLng, places: Place[]): string | null {
   const closest = nearest(point, places);
   if (closest === null || closest.meters > 500) return null;

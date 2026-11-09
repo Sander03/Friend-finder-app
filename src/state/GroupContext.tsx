@@ -4,7 +4,6 @@ import type { LatLng } from '../lib/geo';
 import { createGroup, getMembers, getMyGroups, getPlaces, joinGroup, leaveGroup } from '../services/groupService';
 import type { Group, GroupSummary, Member, Place } from '../types/Group';
 
-// Onthoudt per gebruiker welke groep je laatst koos, zodat je kan wisselen tussen groepen.
 const currentGroupKey = (userId: string) => `waarbenje.group.${userId}`;
 
 async function readCurrentGroup(userId: string): Promise<string | null> {
@@ -19,7 +18,6 @@ async function saveCurrentGroup(userId: string, groupId: string): Promise<void> 
   try {
     await AsyncStorage.setItem(currentGroupKey(userId), groupId);
   } catch {
-    // Niet erg: dan tonen we de groep waar je het laatst lid van werd.
   }
 }
 
@@ -60,9 +58,6 @@ const initial: GroupData = {
   error: null,
 };
 
-// Deze versie gebruikt nog geen GPS (geen native features in de PWA-opdracht).
-// In een groep met een vaste plek (de demo-groep) zetten we je op het terrein;
-// in andere groepen is er nog geen positie. Echte locatie volgt in een volgende fase.
 function positionFor(group: Group | null): MyPosition | null {
   const demo = group?.center ?? null;
   return demo !== null ? { ...demo, accuracy: null, isDemo: true } : null;
@@ -70,11 +65,8 @@ function positionFor(group: Group | null): MyPosition | null {
 
 const GroupContext = createContext<GroupContextValue | null>(null);
 
-// Je groepen, de leden van de actieve groep en je eigen positie.
 export function GroupProvider({ children }: PropsWithChildren) {
   const [data, setData] = useState<GroupData>(initial);
-  // De acties hieronder lezen altijd de nieuwste gegevens via deze ref,
-  // ook als ze aangeroepen worden na een await.
   const current = useRef<GroupData>(initial);
 
   const set = useCallback((changes: Partial<GroupData>) => {
@@ -116,7 +108,6 @@ export function GroupProvider({ children }: PropsWithChildren) {
     try {
       set({ members: await getMembers(group.id) });
     } catch {
-      // De vorige gegevens blijven zichtbaar; de volgende update probeert opnieuw.
     }
   }, [set]);
 

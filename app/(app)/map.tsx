@@ -66,15 +66,6 @@ export default function MapScreen() {
         <IconButton icon="people-outline" label="Groep en uitnodigen" onPress={() => router.push('/group')} testID="group-button" />
       </View>
 
-      {myPosition?.isDemo === true && (
-        <View style={styles.notice}>
-          <Icon name="information-circle-outline" size={18} color={colors.warning} />
-          <Text size="sm" color={colors.warning}>
-            Je eigen locatie delen komt in een volgende versie. Voorlopig tonen we je op een vaste plek op het terrein.
-          </Text>
-        </View>
-      )}
-
       {Platform.OS === 'web' && (
         <View style={styles.switch} accessibilityRole="tablist">
           {(['radar', 'map'] as const).map((view) => (
@@ -105,7 +96,7 @@ export default function MapScreen() {
         ) : (
           <EmptyState
             title="Kaart nog niet beschikbaar"
-            description="Locatie delen komt in een volgende versie. Probeer de kaart in de demo-groep De Bende (code BENDE1)."
+            description="Probeer de kaart in de demo-groep De Bende (code BENDE1)."
           />
         )}
       </View>
@@ -160,7 +151,6 @@ const styles = StyleSheet.create({
   },
   switchItem: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 14, borderRadius: radius.pill },
   switchActive: { backgroundColor: colors.accent },
-  notice: { flexDirection: 'row', gap: 8, marginHorizontal: 20, alignItems: 'flex-start' },
   radar: { flex: 1, minHeight: 280, padding: 8, alignItems: 'center', justifyContent: 'center' },
   sheet: {
     maxHeight: '40%',

@@ -1,7 +1,3 @@
--- Update voor een bestaande database (als je schema.sql al eerder uitvoerde).
--- Groepen zijn niet meer aan een evenement gebonden, en je kan zelf een groep maken.
--- Plak dit in de SQL Editor van Supabase en klik op Run. Je kan het veilig meerdere keren uitvoeren.
-
 alter table public.groups alter column center_lat drop not null;
 alter table public.groups alter column center_lng drop not null;
 
@@ -27,7 +23,6 @@ begin
   insert into group_members (group_id, user_id, display_name, color)
   select g.id, auth.uid(), p.display_name, next_member_color(g.id)
   from profiles p where p.id = auth.uid()
-  -- Al lid? Dan wordt deze groep gewoon terug je huidige groep.
   on conflict (group_id, user_id) do update set joined_at = now();
 
   return g.id;

@@ -11,12 +11,10 @@ import type { User } from '../types/User';
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  // true zodra we weten of er een bewaarde sessie is
   isReady: boolean;
   isLoading: boolean;
   init: () => () => void;
   login: (email: string, password: string) => Promise<void>;
-  // geeft false terug als het e-mailadres eerst bevestigd moet worden
   signUp: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }

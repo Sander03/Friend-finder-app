@@ -7,7 +7,6 @@ const EARTH_RADIUS_M = 6_371_000;
 const toRad = (deg: number) => (deg * Math.PI) / 180;
 const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
-// Afstand in meter tussen twee punten (haversine-formule).
 export function distanceMeters(a: LatLng, b: LatLng): number {
   const dLat = toRad(b.lat - a.lat);
   const dLng = toRad(b.lng - a.lng);
@@ -16,7 +15,6 @@ export function distanceMeters(a: LatLng, b: LatLng): number {
   return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(h));
 }
 
-// Richting van a naar b in graden: 0 = noorden, 90 = oosten.
 export function bearingDegrees(a: LatLng, b: LatLng): number {
   const y = Math.sin(toRad(b.lng - a.lng)) * Math.cos(toRad(b.lat));
   const x =
@@ -36,7 +34,6 @@ export function formatDistance(meters: number): string {
   return `${(meters / 1000).toFixed(1).replace('.', ',')} km`;
 }
 
-// Offset in meter (oost, noord) van b ten opzichte van a, voor de radarweergave.
 export function offsetMeters(a: LatLng, b: LatLng): { east: number; north: number } {
   const north = toRad(b.lat - a.lat) * EARTH_RADIUS_M;
   const east = toRad(b.lng - a.lng) * EARTH_RADIUS_M * Math.cos(toRad(a.lat));
@@ -65,7 +62,6 @@ export function isStale(iso: string, now: number = Date.now()): boolean {
   return now - new Date(iso).getTime() > 10 * 60_000;
 }
 
-// Hoe lang een groep nog loopt, bv. "nog 23 u" of "verlopen".
 export function timeLeft(iso: string, now: number = Date.now()): string {
   const minutes = Math.floor((new Date(iso).getTime() - now) / 60_000);
   if (minutes <= 0) return 'verlopen';

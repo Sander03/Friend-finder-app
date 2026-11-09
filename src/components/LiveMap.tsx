@@ -9,7 +9,6 @@ export interface LiveMapProps {
   onSelectMember: (member: Member) => void;
 }
 
-// Op iOS/Android (zonder browser) tonen we de radar; de echte kaart staat in LiveMap.web.tsx.
 export function LiveMap(props: LiveMapProps) {
   return <Radar {...props} />;
 }

@@ -37,7 +37,6 @@ const toGroup = (row: GroupRow): Group => ({
   endsAt: row.ends_at,
 });
 
-// Alle groepen waar je lid van bent: lopende groepen eerst, daarna de nieuwste.
 export async function getMyGroups(userId: string): Promise<GroupSummary[]> {
   const { data, error } = await supabase
     .from('group_members')
@@ -85,21 +84,18 @@ export async function getMembers(groupId: string): Promise<Member[]> {
   });
 }
 
-// Geeft het id van de groep terug.
 export async function joinGroup(code: string): Promise<string> {
   const { data, error } = await supabase.rpc('join_group', { p_code: code });
   if (error !== null) throw new Error(error.message);
   return data as string;
 }
 
-// Maakt een groep die overal werkt (park, strand, festival...); het delen stopt na 24 uur.
 export async function createGroup(name: string, place: string): Promise<string> {
   const { data, error } = await supabase.rpc('create_group', { p_name: name, p_place: place });
   if (error !== null) throw new Error(error.message);
   return data as string;
 }
 
-// Verwijdert je lidmaatschap (en daarmee je gedeelde locatie) uit de groep.
 export async function leaveGroup(memberId: string): Promise<void> {
   const { error } = await supabase.from('group_members').delete().eq('id', memberId);
   if (error !== null) throw new Error(error.message);
@@ -128,7 +124,6 @@ export async function stopSharing(memberId: string): Promise<void> {
   if (error !== null) throw new Error(error.message);
 }
 
-// Roept onChange op telkens als een locatie of lid in de groep verandert.
 export function subscribeToGroup(groupId: string, onChange: () => void): () => void {
   const channel = supabase
     .channel(`group:${groupId}`)

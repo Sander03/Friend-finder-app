@@ -1,7 +1,5 @@
 import { Platform } from 'react-native';
 
-// Stijlgids van Waarbenje: donkere ondergrond, één felle accentkleur (lime)
-// en een vaste kleur per vriend. Contrast van tekst is minstens 4.5:1.
 export const colors = {
   background: '#0E0F13',
   surface: '#15171D',
@@ -31,8 +29,6 @@ export const radius = {
   pill: 999,
 } as const;
 
-// De lettertypes worden op het web geladen via Google Fonts (zie app/+html.tsx).
-// Op iOS en Android vallen we terug op het systeemlettertype.
 export const fonts = {
   display: Platform.select({ web: '"Space Grotesk", Inter, system-ui, sans-serif', default: undefined }),
   body: Platform.select({ web: 'Inter, system-ui, sans-serif', default: undefined }),

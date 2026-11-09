@@ -22,12 +22,9 @@ export async function signUp(name: string, email: string, password: string): Pro
     options: { data: { display_name: name.trim() } },
   });
   if (error !== null) throw new Error(error.message);
-  // Zonder sessie moet het e-mailadres eerst bevestigd worden.
   return data.session !== null ? toUser(data.session) : null;
 }
 
-// Meldt af. Lukt dat niet bij de server (bv. geen netwerk of verlopen sessie),
-// dan wissen we de sessie toch op dit toestel, zodat je nooit vast blijft zitten.
 export async function logout(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error !== null) await supabase.auth.signOut({ scope: 'local' });

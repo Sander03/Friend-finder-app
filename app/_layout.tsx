@@ -7,7 +7,6 @@ import { SettingsProvider } from '../src/state/SettingsContext';
 import { useAuthStore } from '../src/state/useAuthStore';
 import { colors } from '../src/theme';
 
-// De login zit in een Zustand-store (useAuthStore); groepen en instellingen delen we via React Context.
 export default function RootLayout() {
   const init = useAuthStore((s) => s.init);
 

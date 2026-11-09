@@ -1,10 +1,8 @@
 export interface Group {
   id: string;
   name: string;
-  // Waar de groep is (festival, park, strand...); kan leeg zijn.
   eventName: string;
   joinCode: string;
-  // Alleen de demo-groep heeft een vaste plek; gewone groepen werken overal.
   center: { lat: number; lng: number } | null;
   endsAt: string;
 }

@@ -15,7 +15,6 @@ import { useAuthStore } from '../../src/state/useAuthStore';
 import { useGroups } from '../../src/state/GroupContext';
 import { colors } from '../../src/theme';
 
-// Details van je actieve groep: code delen, leden en groep verlaten.
 export default function GroupScreen() {
   const user = useAuthStore((s) => s.user);
   const { group, members, leave } = useGroups();
@@ -58,7 +57,6 @@ export default function GroupScreen() {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    // het jaar alleen tonen als het niet dit jaar is
     year: endDate.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
     hour: '2-digit',
     minute: '2-digit',
