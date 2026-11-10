@@ -17,110 +17,71 @@
   <summary>Inhoud</summary>
   <ol>
     <li><a href="#over-het-project">Over het project</a></li>
-    <li><a href="#inloggen-voor-de-docent">Inloggen (voor de docent)</a></li>
+    <li><a href="#inloggen">Inloggen</a></li>
     <li><a href="#gebouwd-met">Gebouwd met</a></li>
-    <li><a href="#aan-de-slag">Aan de slag</a></li>
-    <li><a href="#het-idee">Het idee: doelgroep, roadmap en concurrenten</a></li>
+    <li><a href="#lokaal-draaien">Lokaal draaien</a></li>
+    <li><a href="#het-idee">Het idee</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
 ## Over het project
 
-In een vol park, op een druk strand of op een festival raak je je vrienden snel kwijt, en "ik zit bij de grote boom" of "ik sta aan de bar" zegt weinig. **Waarbenje** toont je vrienden op een plattegrond rond jou, met de afstand en de richting. Werkt overal: je maakt een groep, deelt de code en iedereen ziet elkaar. Op een festival met herkenningspunten (Main Stage, Food court, ...) zie je ook bij welk punt je vriend staat. Ben je vlakbij maar zie je elkaar nog niet? Dan laat je je scherm in een felle kleur knipperen.
+Op een festival, in een vol park of op een druk strand raak je je vrienden snel kwijt. **Waarbenje** toont je vrienden op een plattegrond rond jou, met de afstand en de richting. Je maakt een groep, deelt de code en iedereen in de groep ziet elkaar. Een groep stopt automatisch na 24 uur.
 
 **Publieke link:** [https://friend-finder-app-53z9.vercel.app](https://friend-finder-app-53z9.vercel.app)
 
-Schermen in deze versie:
-
 | Scherm | Wat het doet |
 | --- | --- |
-| **Aanmelden** (`/login`) | Aanmelden of een account maken (Supabase Auth). |
-| **Start** (`/`) | Startpagina: je actieve groep met wie er live is, al je groepen (tik om te wisselen) en snelkoppelingen om een groep te maken, een code in te voeren of vrienden uit te nodigen. |
-| **Kaart** (`/map`) | Schakel tussen een radar (jou in het midden, je vrienden rondom) en een echte OpenStreetMap-kaart. Tik op een vriend om die te zoeken. Eronder staat een lijst met afstand en "laatst gezien". Locaties komen live binnen (Supabase Realtime). |
-| **Vriend zoeken** (`/friend`) | Kompasroos met een pijl naar je vriend, afstand, herkenningspunt en bericht. |
-| **Flash** (`/flash`) | Knippert in de kleur van je vriend, zodat die je in de menigte ziet. |
-| **Groep** (`/group`) | Groepscode bekijken, leden bekijken, groep verlaten. |
-| **Groep toevoegen** (`/new`) | Een nieuwe groep maken (voor eender welke plek) of meedoen met een code. |
-| **Instellingen** (`/settings`) | Profiel, privacy-uitleg, afmelden. |
+| **Aanmelden** | Aanmelden of een account maken. |
+| **Start** | Je actieve groep, al je groepen en snelkoppelingen. |
+| **Kaart** | Radar of echte kaart met je vrienden, plus een lijst met afstand. |
+| **Vriend zoeken** | Pijl naar je vriend met de afstand. |
+| **Flash** | Je scherm knippert in een felle kleur, zodat je vriend je ziet. |
+| **Groep** | Groepscode en leden bekijken, groep verlaten. |
+| **Groep toevoegen** | Een groep maken of meedoen met een code. |
+| **Instellingen** | Profiel en afmelden. |
 
-Privacy zit in het ontwerp: je locatie is alleen zichtbaar voor je groep, en het delen stopt automatisch: een nieuwe groep vervalt na 24 uur (afgedwongen met Row Level Security in de database).
-
-> **Geen native features in deze versie:** de PWA gebruikt nog geen GPS, wake lock of deelmenu. Elk nieuw account zit meteen in de demo-groep **De Bende** (code `BENDE1`) op een festivalterrein, en de app zet je daar op een vaste plek, zodat de kaart altijd werkt. Je eigen locatie live delen staat op de roadmap.
+> Deze versie gebruikt nog geen native features (zoals GPS). In de demo-groep **De Bende** sta je daarom op een vaste plek, zodat de kaart altijd werkt.
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
-## Inloggen (voor de docent)
+## Inloggen
 
 | | |
 | --- | --- |
 | E-mail | `niels@gmail.com` |
 | Wachtwoord | `niels01` |
 
-Dit testaccount zit in de demo-groep **De Bende** (code `BENDE1`) met vier vrienden. Een nieuw account maken kan ook: elk nieuw account komt automatisch in de demo-groep.
+Dit account zit in de demo-groep **De Bende** met vier vrienden.
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
 ## Gebouwd met
 
-* [Expo](https://expo.dev) (SDK 52) en [Expo Router](https://docs.expo.dev/router/introduction/), vertrokken van de UCLL-boilerplate
-* React Native en React Native Web
-* [Supabase](https://supabase.com): Postgres-database, Auth en Realtime (gehost)
-* [Zustand](https://zustand-demo.pmnd.rs) voor de login (useAuthStore) en [React Context](https://react.dev/learn/passing-data-deeply-with-context) voor groepen en instellingen
-* [Leaflet](https://leafletjs.com) met [OpenStreetMap](https://www.openstreetmap.org)-tegels voor de echte kaart, net als in de cursusdemo [pwa-locate-me](https://github.com/UCLL-Mobile-Applications-demos/pwa-locate-me)
-* Gehost op [Vercel](https://vercel.com) als PWA (manifest + service worker)
+* [Expo](https://expo.dev) en Expo Router (UCLL-boilerplate)
+* [Supabase](https://supabase.com): database, login en live updates
+* [Leaflet](https://leafletjs.com) met OpenStreetMap voor de kaart
+* [Vercel](https://vercel.com) voor de hosting van de PWA
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
-## Aan de slag
+## Lokaal draaien
 
-### Vereisten
+1. Voer [`supabase/schema.sql`](supabase/schema.sql) uit in de SQL Editor van je Supabase-project.
+2. Maak een bestand `.env` in de hoofdmap:
 
-* Node.js 20 of nieuwer
-* Een (gratis) Supabase-project
+   ```sh
+   EXPO_PUBLIC_SUPABASE_URL=https://<jouw-project>.supabase.co
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=<jouw anon key>
+   ```
 
-### Database opzetten
+3. Start de app:
 
-1. Maak een project op [supabase.com](https://supabase.com).
-2. Open **SQL Editor**, plak de inhoud van [`supabase/schema.sql`](supabase/schema.sql) en klik op **Run**. Dit maakt de tabellen, de beveiliging, realtime en de demo-groep aan. Had je `schema.sql` al eerder uitgevoerd? Voer dan enkel [`supabase/update-overal.sql`](supabase/update-overal.sql) uit.
-3. Maak een testaccount: **Authentication > Users > Add user**, vink *Auto Confirm User* aan.
-
-### Lokaal draaien
-
-Maak eerst in de hoofdmap een bestand `.env` met de gegevens van je eigen Supabase-project (**Project Settings > API**):
-
-```sh
-EXPO_PUBLIC_SUPABASE_URL=https://<jouw-project>.supabase.co
-EXPO_PUBLIC_SUPABASE_ANON_KEY=<jouw anon/publishable key>
-```
-
-Gebruik nooit de secret of service_role key: die hoort niet in een app.
-
-```sh
-npm install
-npm run web            # opent op http://localhost:8081
-```
-
-### PWA bouwen
-
-```sh
-npm run build:web      # maakt de map dist/
-npm run serve:web      # test de gebouwde versie op http://localhost:8081
-```
-
-Op je gsm: open de link in Chrome (Android) of Safari (iOS) en kies **Toevoegen aan beginscherm**.
-
-### Deployen op Vercel
-
-Importeer de GitHub-repo in Vercel. `vercel.json` bevat de build-instellingen. Voeg onder **Settings > Environment Variables** `EXPO_PUBLIC_SUPABASE_URL` en `EXPO_PUBLIC_SUPABASE_ANON_KEY` toe en deploy opnieuw.
-
-### Testen
-
-```sh
-npm run typecheck
-npx cypress run --env email=niels@gmail.com,password=niels01   # met de app op poort 8081
-npm run storybook   # componenten bekijken
-```
+   ```sh
+   npm install
+   npm run web
+   ```
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
@@ -128,66 +89,45 @@ npm run storybook   # componenten bekijken
 
 ### Doelgroep
 
-* **Jongeren van 16 tot 30 jaar** die in groep op stap gaan: een dag naar het strand, picknicken in het park, een festival of concert, een stadsfeest.
-* Ook bruikbaar voor **schooluitstappen, jeugdbewegingen en families op uitstap**: elke situatie waar een groep tijdelijk samen is en elkaar uit het oog verliest.
+Jongeren van 16 tot 30 jaar die in groep op stap gaan: naar een festival, het strand, het park of een stadsfeest. Ze willen snel zien waar iedereen is, zonder hun locatie voor altijd te delen.
 
-Wat ze nodig hebben: snel zien waar iedereen is, zonder hun locatie voor altijd met iedereen te delen.
-
-### Wat ik ga bouwen (roadmap)
+### Roadmap
 
 **Fase 1: PWA (deze versie)**
 
-- [x] Aanmelden en registreren met Supabase
-- [x] Groep maken voor eender welke plek, of meedoen met een code van 6 tekens
-- [x] Overzicht van je groepen en wisselen tussen groepen
-- [x] Radar en echte kaart (OpenStreetMap) met je vrienden
+- [x] Aanmelden en registreren
+- [x] Groep maken of meedoen met een code
+- [x] Radar en kaart met je vrienden
 - [x] Vriend zoeken met richting en afstand
-- [x] Flash-scherm: je scherm knippert in je kleur zodat je vrienden je zien
-- [x] Vrienden worden live bijgewerkt (Supabase Realtime)
+- [x] Flash-scherm
 - [x] Groep stopt automatisch na 24 uur
-- [x] Demo-groep De Bende, zodat de app meteen iets toont
-- [x] Installeerbaar als PWA (manifest en service worker), gehost op Vercel
+- [x] Installeerbaar als PWA
 
-**Fase 2: native features in de PWA**
+**Fase 2: native features**
 
 - [ ] Je eigen locatie live delen (GPS)
 - [ ] Het scherm aan laten tijdens het zoeken
 - [ ] De groepscode delen via het deelmenu van je gsm
-- [ ] Trillen als je vriend dichtbij is
 
-**Fase 3: native app (Expo)**
+**Fase 3: native app**
 
 - [ ] Kompas dat meedraait met je gsm
 - [ ] Locatie delen op de achtergrond
-- [ ] Pushmeldingen ("Lotte vraagt om te flashen")
-- [ ] Bluetooth voor de laatste meters ("binnen ~10 m"), ook zonder internet
-
-**Fase 4: extra's**
-
-- [ ] Foto-pin "Ik sta hier": een foto van wat je ziet (een vlag, een kraam) met een korte tekst
-- [ ] Verzamelpunten die je zelf op de kaart zet
-- [ ] Plattegrond met podia en herkenningspunten per evenement
-- [ ] Offline: laatst bekende locaties en pins bewaren voor als het netwerk overbelast is
+- [ ] Pushmeldingen
 
 ### Concurrenten
 
-| App | Wat ze goed doen | Waar Waarbenje anders is |
-| --- | --- | --- |
-| **Apple Zoek mijn / Find My** | Nauwkeurig, ingebouwd op iPhone | Alleen Apple, en delen is permanent en per persoon in plaats van tijdelijk per groep |
-| **Google Maps locatie delen** | Werkt op Android en iOS | Algemene kaart zonder podia of herkenningspunten; delen per persoon |
-| **WhatsApp live locatie** | Iedereen heeft het al | Per chat en maximaal 8 uur; geen afstand, richting of groepsoverzicht |
-| **Life360** | Gemaakt voor families | Gericht op permanent volgen en veiligheid, niet op een avond uit |
-| **Snap Map** | Populair bij jongeren | Openbaar of semi-openbaar, niet gemaakt om iemand terug te vinden |
-| **Festival-apps** (per festival) | Line-up en terreinkaart | Meestal geen vrienden zoeken, en elk festival heeft een andere app |
-
-Waarbenje combineert het tijdelijke, groepsgerichte delen met hulp voor de laatste meters (richting, herkenningspunten, flash-scherm).
+| App | Verschil met Waarbenje |
+| --- | --- |
+| **Apple Zoek mijn** | Alleen voor iPhone, en je deelt permanent in plaats van tijdelijk per groep. |
+| **Google Maps locatie delen** | Je deelt per persoon, zonder groepsoverzicht. |
+| **WhatsApp live locatie** | Per chat, zonder afstand of richting. |
+| **Life360** | Gemaakt om permanent te volgen, niet voor een dag uit. |
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
 
 ## Contact
 
-Sander Hostyn
-
-Project: [https://github.com/Sander03/Friend-finder-app](https://github.com/Sander03/Friend-finder-app)
+Sander Hostyn: [https://github.com/Sander03/Friend-finder-app](https://github.com/Sander03/Friend-finder-app)
 
 <p align="right">(<a href="#readme-top">terug naar boven</a>)</p>
