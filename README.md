@@ -135,13 +135,39 @@ Wat ze nodig hebben: snel zien waar iedereen is, zonder hun locatie voor altijd 
 
 ### Wat ik ga bouwen (roadmap)
 
-- [x] **PWA (deze versie, zonder native features):** aanmelden, groep met code, plattegrond en kaart met je vrienden (in de demo-groep sta je op een vaste plek), vriend zoeken met richting en afstand, flash-scherm, zelf een groep maken voor eender welke plek, automatisch stoppen na 24 uur.
-- [ ] **Native features in de PWA:** je eigen locatie live delen (GPS), het scherm aan laten tijdens het zoeken en de groepscode delen via het deelmenu van je gsm.
-- [ ] **Foto-pin "Ik sta hier":** een foto van wat je ziet (een vlag, een kraam) met een korte tekst, en verzamelpunten.
-- [ ] **Echte kaart van het terrein:** plattegronden en podia per evenement, offline beschikbaar.
-- [ ] **Native app (Expo dev build):** kompas dat meedraait met je gsm, locatie op de achtergrond, pushmeldingen ("Lotte vraagt om te flashen").
-- [ ] **Bluetooth in de buurt:** "binnen ~10 m" voor de laatste meters, ook zonder internet.
-- [ ] **Offline:** laatst bekende locaties en pins bewaren voor als het netwerk overbelast is.
+**Fase 1: PWA (deze versie)**
+
+- [x] Aanmelden en registreren met Supabase
+- [x] Groep maken voor eender welke plek, of meedoen met een code van 6 tekens
+- [x] Overzicht van je groepen en wisselen tussen groepen
+- [x] Radar en echte kaart (OpenStreetMap) met je vrienden
+- [x] Vriend zoeken met richting en afstand
+- [x] Flash-scherm: je scherm knippert in je kleur zodat je vrienden je zien
+- [x] Vrienden worden live bijgewerkt (Supabase Realtime)
+- [x] Groep stopt automatisch na 24 uur
+- [x] Demo-groep De Bende, zodat de app meteen iets toont
+- [x] Installeerbaar als PWA (manifest en service worker), gehost op Vercel
+
+**Fase 2: native features in de PWA**
+
+- [ ] Je eigen locatie live delen (GPS)
+- [ ] Het scherm aan laten tijdens het zoeken
+- [ ] De groepscode delen via het deelmenu van je gsm
+- [ ] Trillen als je vriend dichtbij is
+
+**Fase 3: native app (Expo)**
+
+- [ ] Kompas dat meedraait met je gsm
+- [ ] Locatie delen op de achtergrond
+- [ ] Pushmeldingen ("Lotte vraagt om te flashen")
+- [ ] Bluetooth voor de laatste meters ("binnen ~10 m"), ook zonder internet
+
+**Fase 4: extra's**
+
+- [ ] Foto-pin "Ik sta hier": een foto van wat je ziet (een vlag, een kraam) met een korte tekst
+- [ ] Verzamelpunten die je zelf op de kaart zet
+- [ ] Plattegrond met podia en herkenningspunten per evenement
+- [ ] Offline: laatst bekende locaties en pins bewaren voor als het netwerk overbelast is
 
 ### Concurrenten
 
